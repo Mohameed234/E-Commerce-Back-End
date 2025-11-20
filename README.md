@@ -92,6 +92,7 @@ POST /api/auth/orders → Create an order from user cart
 
 ## Notes 
 - Stock validation is handled when creating orders.
+- Decrease stock after order
 - Cart is cleared after successful order.
 - JWT authentication is required for cart and order endpoints.
 
@@ -149,6 +150,7 @@ POST /api/auth/orders → Create an order from user cart
                      | total             |
                      | timestamps        |
                      +-------------------+
+
 
 
 
