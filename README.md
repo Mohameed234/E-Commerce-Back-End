@@ -97,52 +97,59 @@ POST /api/auth/orders → Create an order from user cart
 
 ## DB Diagram
 ```text
-users
------
-id (PK)
-name
-email
-password
-created_at
++-------------------+
+|       users       |
++-------------------+
+| id (PK)           |
+| name              |
+| email (unique)    |
+| email_verified_at |
+| password          |
+| remember_token    |
+| timestamps        |
++-------------------+
+          |
+          | (1 - many)
+          |
++-------------------+
+|      carts        |
++-------------------+
+| id (PK)           |
+| user_id (FK) ------------------------+
+| product_id (FK) --------------------+ |
+| quantity                             |
+| timestamps                           |
+| UNIQUE (user_id, product_id)         |
++--------------------------------------+
+          | many                                     many |
+          |                                               |
+          v                                               v
++-------------------+                    +-------------------+
+|     products      |                    |   order_items     |
++-------------------+                    +-------------------+
+| id (PK)           |<------------------ | id (PK)           |
+| name              |      (FK) product  | order_id (FK)     |
+| description       |                    | product_id (FK)   |
+| price             |                    | quantity          |
+| quantity          |                    | price             |
+| sku (unique)      |                    | timestamps        |
+| is_active         |                    +-------------------+
+| timestamps        |
++-------------------+
+                                ^
+                                | (1 - many)
+                                |
+                     +-------------------+
+                     |      orders       |
+                     +-------------------+
+                     | id (PK)           |
+                     | order_number (UQ) |
+                     | address           |
+                     | phone             |
+                     | total             |
+                     | timestamps        |
+                     +-------------------+
+
 updated_at
 
-products
---------
-id (PK)
-name
-description
-price
-quantity
-created_at
-updated_at
-
-cart
-----
-id (PK)
-user_id (FK -> users.id)
-product_id (FK -> products.id)
-quantity
-created_at
-updated_at
-
-orders
-------
-id (PK)
-order_number
-user_id (FK -> users.id)
-address
-phone
-total
-created_at
-updated_at
-
-order_items
------------
-id (PK)
-order_id (FK -> orders.id)
-product_id (FK -> products.id)
-quantity
-price
-created_at
-updated_at
 
