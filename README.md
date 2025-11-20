@@ -1,4 +1,4 @@
-# Laravel Orders & Cart Module
+# Laravel E-commerce-Back-End
 
 This is a simple Laravel backend project for managing products, cart, and orders.
 
@@ -16,8 +16,13 @@ This is a simple Laravel backend project for managing products, cart, and orders
 git clone https://github.com/username/laravel-orders-cart.git
 cd laravel-orders-cart
 
-2- Install dependencies:
+
+2. Install dependencies:
 
 ```bash
 composer install
+ذذ
+ذذ
+
+
 
