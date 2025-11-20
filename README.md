@@ -1,63 +1,155 @@
 
-# E-Commerce-Back-End
-=======
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel E-commerce-Back-End
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a simple Laravel backend project for managing products, cart, and orders.
 
-## About Laravel
+## Requirements
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP >= 8.2
+- Laravel 12
+- MySQL / SQLite
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clone the repo:
+```bash
+git clone https://github.com/username/laravel-orders-cart.git
+cd laravel-orders-cart
+```
 
-## Learning Laravel
+2. Install dependencies:
+```bash
+composer install
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+3. Copy .env file:
+```bash
+cp .env.example .env
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. Set up database in .env
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=[the name of your database]
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Laravel Sponsors
+5- Run migrations & seeders:
+```bash
+php artisan migrate --seed
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+6. Serve the project:
+```bash
+php artisan serve
+```
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## API Usage
 
-## Contributing
+### Auth
+```bash
+POST /api/auth/register → Register a user
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+POST /api/auth/login → Login
 
-## Code of Conduct
+GET /api/auth/me → Get user profile
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+POST /api/auth/logout → Logout
+```
 
-## Security Vulnerabilities
+### Products
+```bash
+GET /api/auth/products → List all products
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+GET /api/auth/products/{id} → Get product details
 
-## License
+POST /api/auth/products → Create product
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+PUT /api/auth/products/{id} → Update product
+
+DELETE /api/auth/products/{id} → Delete product
+```
+
+### Cart
+```bash
+GET /api/auth/cart → View cart
+
+POST /api/auth/cart → Add to cart
+
+PUT /api/auth/cart/{product_id} → Update cart item
+
+DELETE /api/auth/cart/{product_id} → Remove from cart
+```
+
+### Orders
+```bash
+POST /api/auth/orders → Create an order from user cart
+```
+
+
+## Notes 
+- Stock validation is handled when creating orders.
+- Decrease stock after order
+- Cart is cleared after successful order.
+- JWT authentication is required for cart and order endpoints.
+
+## DB Diagram
+```text
++-------------------+
+|       users       |
++-------------------+
+| id (PK)           |
+| name              |
+| email (unique)    |
+| email_verified_at |
+| password          |
+| remember_token    |
+| timestamps        |
++-------------------+
+          |
+          | (1 - many)
+          |
++-------------------+
+|      carts        |
++-------------------+
+| id (PK)           |
+| user_id (FK) ------------------------+
+| product_id (FK) --------------------+ |
+| quantity                             |
+| timestamps                           |
+| UNIQUE (user_id, product_id)         |
++--------------------------------------+
+          | many                                     many |
+          |                                               |
+          v                                               v
++-------------------+                    +-------------------+
+|     products      |                    |   order_items     |
++-------------------+                    +-------------------+
+| id (PK)           |<------------------ | id (PK)           |
+| name              |      (FK) product  | order_id (FK)     |
+| description       |                    | product_id (FK)   |
+| price             |                    | quantity          |
+| quantity          |                    | price             |
+| sku (unique)      |                    | timestamps        |
+| is_active         |                    +-------------------+
+| timestamps        |
++-------------------+
+                                ^
+                                | (1 - many)
+                                |
+                     +-------------------+
+                     |      orders       |
+                     +-------------------+
+                     | id (PK)           |
+                     | order_number (UQ) |
+                     | address           |
+                     | phone             |
+                     | total             |
+                     | timestamps        |
+                     +-------------------+
+
 
