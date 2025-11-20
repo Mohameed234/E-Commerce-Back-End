@@ -150,6 +150,7 @@ POST /api/auth/orders → Create an order from user cart
                      | timestamps        |
                      +-------------------+
 
-updated_at
+
+
 
 
