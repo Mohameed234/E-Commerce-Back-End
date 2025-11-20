@@ -4,8 +4,8 @@ This is a simple Laravel backend project for managing products, cart, and orders
 
 ## Requirements
 
-- PHP >= 8.1
-- Laravel 10
+- PHP >= 8.2
+- Laravel 12
 - MySQL / SQLite
 
 ## Setup
@@ -150,6 +150,7 @@ POST /api/auth/orders → Create an order from user cart
                      | total             |
                      | timestamps        |
                      +-------------------+
+
 
 
 
