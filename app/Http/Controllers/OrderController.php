@@ -12,11 +12,32 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+
+    public function index()
+    {
+        $orders = Order::with('items')->get();
+        return response()->json($orders);
+    }
+
+    public function show($id)
+    {
+        $order = Order::with('items.product')->find($id);
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        return response()->json($order);
+    }
+
+
+
     public function store(Request $request)
     {
         $data = $request->validate([
             'address' => 'required|string',
             'phone' => 'required|string',
+
         ]);
 
         $userId = auth()->id(); // assuming user is authenticated
