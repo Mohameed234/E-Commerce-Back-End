@@ -47,6 +47,12 @@ php artisan migrate --seed
 php artisan serve
 ```
 
+7. Test User:
+```bash
+Email: admin@test.com
+password: 123456
+```
+
 
 ## API Usage
 
